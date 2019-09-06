@@ -211,7 +211,8 @@ git clone https://github.com/Akachain/devtool-community-network.git
 
 echo "=================================================================="
 echo "Runing Mysql container ..."
-docker run -p 4406:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=Akachain mysql/mysql-server
+docker rm -f mysql
+docker run -p 4406:3306 -d --restart always --name mysql -e MYSQL_ROOT_PASSWORD=Akachain mysql/mysql-server
 
 echo "Configure Mysql, Please wait ..."
 while true;
@@ -237,8 +238,8 @@ cd  ${WORKING_DIR}/devtool-backend
 git checkout develop
 npm install
 nohup node server.js > output_backend.log &
-
-docker run -p 4500:80 -d akachain/devtool-frontend
+docker rm -f devtool-frontend
+docker run -p 4500:80 -d --restart always --name devtool-frontend akachain/devtool-frontend
 
 
 echo "Please open http://localhost:4500 to start using devtool"
