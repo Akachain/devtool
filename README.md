@@ -16,15 +16,15 @@ Applications/Chaincodes on this tool can run on Akachain platform and also on Hy
 
 ## Devtool Diagram
 
-Devtool consist of following components:
+Devtool consists of following components:
 - Blockchain network: Blockchain network is based on Hyperledger Fabric. It can be customized when created using admin tool (create network). Each blockchain network contains the following components:
   - Peers (currently we support two peers)
-  - CA: Centralized of Authentication
+  - CA: Certificate Authority
   - Orderer: Currently We support Solo orderer type. Raft and Kafka will be supported soon
 - Dapp template: Decentralized application template to work with blockchain (It is integrated with devtool backend)
 - Admin tool: To manage blockchain network (define network/delete network), Install/update/init/query chaincode.
 - Blockchain explorer: To explorer everything on blockchain
-- Postgres/Mysql: are database that running on container
+- Postgres/Mysql: are databases that running on container serving devtool backend and explorer
 
 ![](images/devtool_diagram.jpg)
 
