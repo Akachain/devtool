@@ -241,7 +241,7 @@ nohup node server.js > output_backend.log &
 docker rm -f devtool-frontend
 docker run -p 4500:80 -d --restart always --name devtool-frontend akachain/devtool-frontend
 
-
+echo "\n\n"
 echo "Please open http://localhost:4500 to start using devtool"
 
 
