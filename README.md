@@ -46,7 +46,7 @@ The installation may take serveral minutes because It downloads many packages an
 
 ## How to use
 
-After installation, please check the *Documents* tab to learn how to use or checkout [this guide](#docs/guide.md)
+After installation, please check the *Documents* tab to learn how to use or checkout [this guide](docs/guide.md)
 
 ## Development resources
 
