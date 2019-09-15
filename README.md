@@ -9,9 +9,7 @@ Applications/Chaincodes on this tool can run on Akachain platform and also on Hy
 
   - [Devtool diagram](#devtool-diagram)
   - [Installation](#Installation)
-  - [Define network](#define-network)
-  - [Install Chaincode](#install-chaincode)
-  - [Chaincode Development](#chaincode-development)
+  - [How to use](#how-to-use)
   - [Development resources](#development-resources)
   - [Known Issues](#known-issues)
 
@@ -39,33 +37,16 @@ Currently We support running Akachain development tool on Linux (Ubuntu, Fedora,
 - *setupEnv.sh* script will automatically check and install dependencies on Ubuntu. For other OS, Please follow the link [docker](https://docs.docker.com/install/), [nodejs](https://nodejs.org) to complete installation before using.
 
 ### Install package
-- For Linux based: run script `./setupEnv.sh`
+- For Linux based: 
+  - Setup environment or reset network ```./setupEnv.sh``` or `./setupEnv.sh reset`
+  - Start again (after PC reset, program terminated ...) `./setupEnv.sh start`
 - For Windows: `TO BE UPDATED ...`
 
 The installation may take serveral minutes because It downloads many packages and docker images. After installation, please open web browser `http://localhost:4500` to get started.
 
+## How to use
 
-## Define network
-Go to Network tab then fill the following information
-- Fabric Version: Version of Hyperledger Fabric to be used (1.2 | 1.3 | 1.4 | 2.0)
-- Network name: Name of the network
-- Channel name: Name of channel that will be created.
-- Orgs name: Insert name of organizations, currently we support 2 orgs.
-
-![](images/create_network.jpg)
-
-## Install Chaincode
-All chaincode files, libraries should be zipped to one *.zip file. To install chaincode, click the *Your chaincode* tab on the left pannel. Chose chaincode and then click the *Upload Chaincode* button. If chaincode is succesfully installed, It will be added to the chaicode list. It fail, an error message will be returned.
-
-Chaincode must be initialized before used. To init chaincode, select chaincode in the chaincode list. When the chaincode detail page appear, click on *Init* tab, provide initial params and click *Init submit* button. The *Init status* in chaincode list indicates if the chaincode initializes success or not.
-
-
-## Chaincode Development
-Please follow the link below to learn how to develop a chaincode 
-
-[Akachain chaincode developement](https://akc-assets.s3-ap-southeast-1.amazonaws.com/documents/AKC_Chaincode_guideline.pdf)
-
-[Hyperledger chaincode development](https://hyperledger-fabric.readthedocs.io/en/release-1.4/tutorials.html)
+After installation, please check the *Documents* tab to learn how to use or checkout [this guide](#docs/guide.md)
 
 ## Development resources
 

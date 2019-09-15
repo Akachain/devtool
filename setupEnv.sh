@@ -147,9 +147,11 @@ install_nodejs() {
     fi 
 }
 
-
+echo "=================================================================="
+echo "                      CHECKING ENVIRONMENT                        "
 docker=$(check_docker)
 nodejs=$(check_nodejs)
+password=""
 
 if [ "$docker" = "null" ] && [ "$nodejs" = "null" ]; then 
     echo "Docker and Nodejs are not installed on your system, would you like to install them now [y/n]: "
@@ -190,61 +192,113 @@ if [ "$docker" = "null" ] | [ "$nodejs" = "null" ]; then
     exit 1
 fi
 
-
-
-echo "=================================================================="
-echo "Loading Akachain packages, Please wait ..."
-
-if [ -d ${WORKING_DIR} ]; then 
-    echo "Found previous data, clean it now ..."
-    rm -fr ${WORKING_DIR}
-fi 
-
-mkdir -p ${WORKING_DIR}
-cd ${WORKING_DIR}
-
-#get akachain backend, frontend, script using CURL or WGET or Git
-git clone https://github.com/Akachain/devtool-backend.git
-git clone https://github.com/Akachain/devtool-community-network.git
-
-#git clone https://github.com/Akachain/devtool-scripts.git
-
-echo "=================================================================="
-echo "Runing Mysql container ..."
-docker rm -f mysql
-docker run -p 4406:3306 -d --restart always --name mysql -e MYSQL_ROOT_PASSWORD=Akachain mysql/mysql-server
-
-echo "Configure Mysql, Please wait ..."
-while true;
-do
-    isMysql=$(docker ps | grep "mysql")
+if [ "$1" = "start" ]; then
+    echo "=================================================================="
+    echo "                     START APPLICATION                            "
+    #check if environment ready or not
+    #checking mysql
+    isMysql=$(docker ps | grep "devtool-mysql")
     isHealthy=$(docker ps | grep "healthy")
-    if [ ! -z "$isMysql" ] && [ ! -z "$isHealthy" ]; then
-        docker exec -it mysql sh -c "mysql -uroot -pAkachain -e \"UPDATE mysql.user SET Host='%' WHERE User='root' AND Host='localhost'\""
-        docker exec -it mysql sh -c "mysql -uroot -pAkachain -e \"GRANT ALL PRIVILEGES ON * . * TO 'root'@'%'\""
-        docker exec -it mysql sh -c "mysql -uroot -pAkachain -e \"ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Akachain'\""
-        echo "finish configuration mysql"
-        break
+    if [ -z "$isMysql" ] && [ -z "$isHealthy" ]; then
+        echo "MYSQL server is not ready, please start it manually by 'docker start mysql'"
+        exit 1
     fi
-    sleep 1
-done
+    #check devtool admin
+    isDevtoolAdmin=$(docker ps | grep "akachain/devtool-admin")
+    if [ -z "$isDevtoolAdmin" ]; then 
+        echo "Devtool admin is not ready, please start it manualy by 'docker start admin'"
+        exit 1
+    fi 
+    #check devtool frontend
+    isFrontEnd=$(docker ps | grep "akachain/devtool-frontend")
+     if [ -z "$isFrontEnd" ]; then 
+        echo "Devtool front end is not ready, please start it manualy by 'docker start devtool-frontend'"
+        exit 1
+    fi 
 
-cd ${WORKING_DIR}/devtool-community-network
-git checkout develop
-chmod +x ./runFabric.sh
-chmod +x ./scripts/*
+    if [ ! -d ${WORKING_DIR}/devtool-backend ]; then
+        echo "Cannot find devtool backend"
+        exit 1
+    fi
+    cd ${WORKING_DIR}/devtool-backend
+    npm install 
+    nohup node server.js > output_backend.log &
+    echo "=================================================================="
+    echo "Devtool is ready now, You can try it at http://localhost:4500"
+    
+    footer
+fi
 
-cd  ${WORKING_DIR}/devtool-backend
-git checkout develop
-npm install
-nohup node server.js > output_backend.log &
-docker rm -f devtool-frontend
-docker pull akachain/devtool-frontend:latest && docker run -p 4500:80 -d --restart always --name devtool-frontend akachain/devtool-frontend
+if [ "$1" = "reset" ] || [ -z "$1" ] ; then
+    if [ -d ${WORKING_DIR} ]; then 
+        if [ -z "$password" ]; then
+            echo -n "Please enter your sudo password to continue: "
+            read -s password;
+        fi 
+        echo $password | sudo rm -fr ${WORKING_DIR}
+        if [ $? -ne 0 ]; then
+            echo "Cannot delete old working data ${WORKING_DIR}, try delete it manually and then run script again"
+            exit 1
+        fi
+    fi
 
-echo "\n\n"
-echo "Please open http://localhost:4500 to start using devtool"
+    echo ""
+    echo "=================================================================="
+    echo "             LOADING AKACHAIN PACKAGES, PLEASE WAIT ...            "
 
+    mkdir ${WORKING_DIR}
+    cd ${WORKING_DIR}
 
+    #get akachain backend, frontend, script using CURL or WGET or Git
+    git clone https://github.com/Akachain/devtool-backend.git
+    git clone https://github.com/Akachain/devtool-community-network.git
 
-footer
+    #git clone https://github.com/Akachain/devtool-scripts.git
+
+    echo "=================================================================="
+    echo "Runing Mysql container"
+    docker rm -f devtool-mysql
+    docker run -p 4406:3306 -d --restart always --name devtool-mysql -e MYSQL_ROOT_PASSWORD=Akachain mysql/mysql-server
+
+    echo "Mysql started. It may take sereral munites for ready connection, please wait ..."
+    while true;
+    do
+        isMysql=$(docker ps | grep "mysql")
+        isHealthy=$(docker ps | grep "healthy")
+        isUnHealthy=$(docker ps | grep "unhealthy")
+        if [ ! -z "$isMysql" ] && [ ! -z "$isHealthy" ] && [ -z "$isUnHealthy" ]; then
+            echo "Connection ready, start configuration"
+            docker exec -it devtool-mysql sh -c "mysql -uroot -pAkachain -e \"UPDATE mysql.user SET Host='%' WHERE User='root' AND Host='localhost'\""
+            docker exec -it devtool-mysql sh -c "mysql -uroot -pAkachain -e \"GRANT ALL PRIVILEGES ON * . * TO 'root'@'%'\""
+            docker exec -it devtool-mysql sh -c "mysql -uroot -pAkachain -e \"ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Akachain'\""
+            echo "Configuration finish"
+            break
+        fi
+        sleep 1
+    done
+
+    echo "=================================================================="
+    echo "                  PREPARE FOR INSTALLING NETWORK                  "
+    cd ${WORKING_DIR}/devtool-community-network
+    git checkout develop
+    chmod +x ./runFabric.sh
+    chmod +x ./scripts/*
+
+    echo "=================================================================="
+    echo "                      INSTALLING BACKEND SERVER                   "
+    cd  ${WORKING_DIR}/devtool-backend
+    git checkout develop
+    npm install
+    nohup node server.js > output_backend.log &
+
+    docker rm -f devtool-frontend
+    docker pull akachain/devtool-frontend:latest && docker run -p 4500:80 -d --restart always --name devtool-frontend akachain/devtool-frontend
+
+    echo ""
+    echo "=================================================================="
+    echo "Devtool is ready now, You can try it at http://localhost:4500"
+
+    footer
+fi
+
 
