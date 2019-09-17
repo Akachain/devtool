@@ -35,6 +35,13 @@ To create new network, click the *Network* tab on the left pannel, fill the info
 Network will be initiated, the process will take serveral munites to complete. The logs from process can be viewed from *LOGS* pannel.
 When network creation completed, It will be added to the *NETWORK OVERVIEW* table.
 
+Endpoint list
+- Devtool frontend: http://localhost:4500
+- Devtool backend : http://localhost:44080
+- Devtool explorer: http://localhost:48080
+- Devtool Admin   : http://localhost:44081
+- To check others endpoind running inside container, please use this command `docker ps`
+
 ## Install Chaincode
 All chaincode files, libraries should be zipped to one *.zip file. To install chaincode, click the *Your chaincode* tab on the left pannel. Chose chaincode file, chaincode language and then click the *Upload Chaincode* button. If chaincode is succesfully installed, It will be added to the chaicode list. It fail, an error message will be returned.
 
@@ -73,6 +80,10 @@ Example of calling chaincode from Postman
 
 ![](../images/postman_chaincode.jpg)
 
+To explorer blockchain network including channel, block heigh, transaction detail ... please open blockchain explorer at http://localhost:48080
+
+![](../images/tx_explorer.jpg)
+
 ## Chaincode Development
 Please follow the link below to learn how to develop a chaincode 
 
@@ -82,7 +93,6 @@ Please follow the link below to learn how to develop a chaincode
 
 ## Known Issues
 - For some reason, Mysql container is not ready when startup and devtool backend cannot connect to DB. In this cases, please check mysql container status `docker ps` to see if the status is *healthy* and then start again.
-- Because some bugs from shell scripts, Organization name can work correctly with lowercase, please donot name organzation with uppercase or camel style.
 
 ## Contact Information
 - Support team: [support@akchain.io](mailto:support@akachain.io)
