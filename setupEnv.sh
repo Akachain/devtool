@@ -280,14 +280,14 @@ if [ "$1" = "reset" ] || [ -z "$1" ] ; then
     echo "=================================================================="
     echo "                  PREPARE FOR INSTALLING NETWORK                  "
     cd ${WORKING_DIR}/devtool-community-network
-    git checkout develop
+    git checkout master
     chmod +x ./runFabric.sh
     chmod +x ./scripts/*
 
     echo "=================================================================="
     echo "                      INSTALLING BACKEND SERVER                   "
     cd  ${WORKING_DIR}/devtool-backend
-    git checkout develop
+    git checkout master
     npm install
     nohup node server.js > output_backend.log &
 
