@@ -93,6 +93,8 @@ Please follow the link below to learn how to develop a chaincode
 
 ## Known Issues
 - For some reason, Mysql container is not ready when startup and devtool backend cannot connect to DB. In this cases, please check mysql container status `docker ps` to see if the status is *healthy* and then start again.
+- Fabric version 1.2, 1.3 and 2.0 may not working porperly, please chose version v1.4.1 because it is well tested.
+- When network start up, there may be ten of container running on local PC, It may take long time to complete the process if hardwares are not good enough, please be patient
 
 ## Contact Information
 - Support team: [support@akchain.io](mailto:support@akachain.io)

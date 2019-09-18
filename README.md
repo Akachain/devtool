@@ -59,4 +59,7 @@ After installation, please check the *Documents* tab to learn how to use or chec
 
 
 ## Known Issues
+- Fabric version 1.2, 1.3 and 2.0 may not working porperly, please chose version v1.4.1 because it is well tested.
+- When network start up, there may be ten of container running on local PC, It may take long time to complete the process if hardwares are not good enough, please be patient
+
 
