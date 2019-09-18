@@ -257,7 +257,7 @@ if [ "$1" = "reset" ] || [ -z "$1" ] ; then
 
     echo "=================================================================="
     echo "Runing Mysql container"
-    docker rm -f devtool-mysql
+    docker rm -f $(docker ps -a | grep devtool-mysql | awk '{print $1}')
     docker run -p 4406:3306 -d --restart always --name devtool-mysql -e MYSQL_ROOT_PASSWORD=Akachain mysql/mysql-server
 
     echo "Mysql started. It may take sereral munites for ready connection, please wait ..."
@@ -291,7 +291,7 @@ if [ "$1" = "reset" ] || [ -z "$1" ] ; then
     npm install
     nohup node server.js > output_backend.log &
 
-    docker rm -f devtool-frontend
+    docker rm -f $(docker ps -a | grep devtool-frontend | awk '{print $1}')
     docker pull akachain/devtool-frontend:latest && docker run -p 4500:80 -d --restart always --name devtool-frontend akachain/devtool-frontend
 
     echo ""
