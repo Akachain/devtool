@@ -1,9 +1,8 @@
-# Akachain development tool
+# Akachain Development Tool
 
-Akachain development tool (devtool) provides the easy way for developers to create, build and test their decentralized applications on their local PC. The development tool includes the scripts to build blockchain network, blockchain explorer, decentralized application (Dapp) template, admin tool ... 
-
-Applications/Chaincodes on this tool can run on Akachain platform and also on Hyperledger Fabric.  
-
+Akachain Development Tool (devtool) provides a framework allowing developers to immediately build and test their
+blockchain applications locally on their local PC. 
+This includes a local Hyperledger Fabric blockchain network with 2 organizations and other tools to support applications development
 
 ## Table of Contents
 
